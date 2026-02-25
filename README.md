@@ -382,7 +382,7 @@ We are grateful for the contributions of the following team members:
 | **Anushree Upasham** | AI/ML Developer | [GitHub](https://github.com/annuuxoxo) |
 | **Akshi Takle** | Full Stack Developer | [GitHub](https://github.com/Akshii17) |
 | **Shreya Mane** | Frontend Developer | [GitHub](https://github.com/shreyamane1526) |
-| **Sakshi Kalunge** | Frontend Developer | [GitHub](https://github.com/SakshiKalunge07) |
+| **Sakshi Kalunge** | Frontend & Integration | [GitHub](https://github.com/SakshiKalunge07) |
 | **Sofia Abidi** | Backend Developer | [GitHub](https://github.com/sofiaabidi) |
 
 ---
