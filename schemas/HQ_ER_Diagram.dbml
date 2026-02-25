@@ -1,0 +1,436 @@
+// HQ (Headquarters) ER Diagram
+// Generated from schema.sql
+// This diagram focuses on HQ operations: office-based employees, projects, tasks, work files
+
+// ============================================
+// Core Tables Group
+// ============================================
+
+TableGroup "Core Tables" {
+  users
+  teams
+  team_members
+}
+
+Table users {
+  id int [pk]
+  name varchar(150) [not null]
+  email varchar(150) [not null, unique]
+  password_hash varchar(255) [not null]
+  role varchar(20) [not null, note: 'EMPLOYEE, MANAGER, ADMIN, HQ_ORG']
+  department varchar(100)
+  designation varchar(100)
+  is_active boolean [default: true]
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+  
+  Note: 'Core user table - HQ employees, managers, admins'
+}
+
+Table teams {
+  id int [pk]
+  name varchar(150) [not null]
+  manager_id int [not null, ref: > users.id]
+  created_at timestamp [default: `now()`]
+}
+
+Table team_members {
+  team_id int [pk, ref: > teams.id]
+  user_id int [pk, ref: > users.id]
+}
+
+// ============================================
+// Project Management Group
+// ============================================
+
+TableGroup "Project Management" {
+  projects
+  project_members
+  project_evaluations
+}
+
+Table projects {
+  id int [pk]
+  name varchar(200) [not null]
+  description text
+  status varchar(20) [default: 'active', not null, note: 'active, completed, archived']
+  start_date date
+  due_date date
+  created_by int [ref: > users.id]
+  created_at timestamp [default: `now()`]
+  budget varchar(100)
+  dpr_deadline date
+  progress_percent decimal(5,2) [default: 0]
+  project_type varchar(20) [default: 'hq', note: 'hq or field']
+  
+  Note: 'Projects - filter by project_type=\'hq\' for HQ diagram'
+}
+
+Table project_members {
+  project_id int [pk, ref: > projects.id]
+  user_id int [pk, ref: > users.id]
+  created_at timestamp [default: `now()`]
+}
+
+Table project_evaluations {
+  id int [pk]
+  project_id int [not null, ref: > projects.id]
+  evaluated_by int [not null, ref: > users.id]
+  quality_score decimal(3,1)
+  technical_compliance decimal(3,1)
+  remarks text
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+}
+
+// ============================================
+// Task Management Group
+// ============================================
+
+TableGroup "Task Management" {
+  tasks
+  task_submissions
+  task_submission_files
+  task_feedbacks
+}
+
+Table tasks {
+  id int [pk]
+  title varchar(200) [not null]
+  description text
+  project_id int [ref: > projects.id]
+  assigned_to int [ref: > users.id]
+  assigned_by int [ref: > users.id]
+  priority varchar(10) [default: 'medium', note: 'low, medium, high']
+  status varchar(20) [default: 'pending', note: 'pending, in-progress, completed, delayed, rejected, awaiting-review']
+  due_date date
+  completed_at timestamp
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+  draft_number int [default: 1]
+  milestone_id int [note: 'Field projects only - not typically used for HQ tasks']
+  cost varchar(100)
+  expected_output text
+  planned_duration int
+  planned_completion_date date
+}
+
+Table task_submissions {
+  id int [pk]
+  task_id int [not null, ref: > tasks.id]
+  milestone_id int [note: 'Field projects only - not typically used for HQ tasks']
+  submitted_by int [not null, ref: > users.id]
+  submission_type varchar(20) [not null, note: 'file, image, document']
+  file_document_id int [ref: > file_documents.id]
+  cost varchar(100)
+  status varchar(20) [default: 'submitted', note: 'submitted, approved, rejected, pending-review']
+  submitted_at timestamp [default: `now()`]
+  reviewed_by int [ref: > users.id]
+  reviewed_at timestamp
+  notes text
+}
+
+Table task_submission_files {
+  id int [pk]
+  task_submission_id int [not null, ref: > task_submissions.id]
+  file_document_id int [not null, ref: > file_documents.id]
+  file_type varchar(20) [not null, note: 'image, pdf, document']
+  uploaded_at timestamp [default: `now()`]
+}
+
+Table task_feedbacks {
+  id int [pk]
+  task_id int [ref: > tasks.id]
+  from_user_id int [ref: > users.id]
+  to_user_id int [ref: > users.id]
+  rating int [note: '1-5']
+  comment text
+  created_at timestamp [default: `now()`]
+}
+
+// ============================================
+// File Management Group
+// ============================================
+
+TableGroup "File Management" {
+  work_files
+  file_documents
+}
+
+Table work_files {
+  id int [pk]
+  employee_id int [not null, ref: > users.id]
+  manager_id int [ref: > users.id]
+  task_id int [ref: > tasks.id]
+  title varchar(200) [not null]
+  description text
+  complexity varchar(20) [not null, note: 'low, medium, high']
+  complexity_weight decimal(5,2) [default: 1.0, not null]
+  is_digital boolean [default: true, not null]
+  target_time_hours decimal(8,2) [not null]
+  sla_time_hours decimal(8,2) [not null]
+  created_at timestamp [default: `now()`]
+  first_response_at timestamp
+  completed_at timestamp
+  grammar_score decimal(5,2)
+  clarity_score decimal(5,2)
+  reviewed_by int [ref: > users.id]
+  reviewed_at timestamp
+}
+
+Table file_documents {
+  id int [pk]
+  work_file_id int [ref: > work_files.id]
+  uploaded_by int [ref: > users.id]
+  original_name varchar(255) [not null]
+  mime_type varchar(100) [not null]
+  file_size int [not null]
+  storage_path varchar(500) [not null]
+  created_at timestamp [default: `now()`]
+  approval_status varchar(20) [default: 'pending', not null]
+  reviewed_by int [ref: > users.id]
+  reviewed_at timestamp
+}
+
+// ============================================
+// Attendance Group
+// ============================================
+
+TableGroup "Attendance" {
+  attendance
+  attendance_adjustments
+}
+
+Table attendance {
+  id int [pk]
+  user_id int [not null, ref: > users.id]
+  date date [not null]
+  check_in_time timestamp
+  check_out_time timestamp
+  total_hours decimal(6,2)
+  status varchar(20) [default: 'present', not null]
+  
+  indexes {
+    (user_id, date) [unique]
+  }
+}
+
+Table attendance_adjustments {
+  id int [pk]
+  attendance_id int [not null, ref: > attendance.id]
+  manager_id int [not null, ref: > users.id]
+  adjustment json [not null]
+  created_at timestamp [default: `now()`]
+}
+
+// ============================================
+// KPI & Performance Group
+// ============================================
+
+TableGroup "KPI & Performance" {
+  employee_kpi_snapshots
+  manager_kpi_snapshots
+  kpi_adjustments
+}
+
+Table employee_kpi_snapshots {
+  id int [pk]
+  user_id int [not null, ref: > users.id]
+  period_start date [not null]
+  period_end date [not null]
+  file_disposal_rate decimal(5,2)
+  responsiveness decimal(5,2)
+  tat_score decimal(5,2)
+  quality_of_drafting decimal(5,2)
+  digital_adoption decimal(5,2)
+  final_kpi decimal(5,2)
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+  
+  indexes {
+    (user_id, period_start, period_end) [unique]
+  }
+}
+
+Table manager_kpi_snapshots {
+  id int [pk]
+  manager_id int [not null, ref: > users.id]
+  period_start date [not null]
+  period_end date [not null]
+  avg_team_kpi decimal(5,2)
+  review_ratio decimal(5,2)
+  final_kpi decimal(5,2)
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+  
+  indexes {
+    (manager_id, period_start, period_end) [unique]
+  }
+}
+
+Table kpi_adjustments {
+  id int [pk]
+  user_id int [not null, ref: > users.id]
+  manager_id int [not null, ref: > users.id]
+  period_start date [not null]
+  period_end date [not null]
+  delta decimal(5,2) [not null]
+  reason text
+  created_at timestamp [default: `now()`]
+  
+  indexes {
+    (user_id, period_start, period_end) [unique]
+  }
+}
+
+// ============================================
+// Skills & Training Group
+// ============================================
+
+TableGroup "Skills & Training" {
+  employee_skills
+  trainings
+}
+
+Table employee_skills {
+  id int [pk]
+  user_id int [not null, ref: > users.id]
+  name varchar(120) [not null]
+  created_at timestamp [default: `now()`]
+  
+  indexes {
+    (user_id, name) [unique]
+  }
+}
+
+Table trainings {
+  id int [pk]
+  user_id int [ref: > users.id]
+  name varchar(200) [not null]
+  status varchar(20) [note: 'completed, upcoming, in-progress']
+  start_date date
+  completion_date date
+  duration_hours decimal(6,2)
+}
+
+// ============================================
+// Recognition Group
+// ============================================
+
+TableGroup "Recognition" {
+  employee_badges
+  recognitions
+}
+
+Table employee_badges {
+  id int [pk]
+  user_id int [not null, ref: > users.id]
+  name varchar(150) [not null]
+  description text
+  icon varchar(100)
+  awarded_by int [ref: > users.id]
+  awarded_at timestamp [default: `now()`]
+  metadata json
+}
+
+Table recognitions {
+  id int [pk]
+  user_id int [ref: > users.id]
+  title varchar(200) [not null]
+  type varchar(50)
+  description text
+  date date
+  issued_by varchar(150)
+}
+
+// ============================================
+// Feedback Group
+// ============================================
+
+TableGroup "Feedback" {
+  manager_feedbacks
+  peer_feedbacks
+}
+
+Table manager_feedbacks {
+  id int [pk]
+  manager_id int [not null, ref: > users.id]
+  employee_id int [not null, ref: > users.id]
+  regarding varchar(200)
+  rating int [not null, note: '1-5']
+  comment text
+  created_at timestamp [default: `now()`]
+  sentiment varchar(20) [note: 'positive, negative, neutral']
+  emotion varchar(50)
+}
+
+Table peer_feedbacks {
+  id int [pk]
+  from_user_id int [not null, ref: > users.id]
+  to_user_id int [not null, ref: > users.id]
+  regarding varchar(200)
+  rating int [not null, note: '1-5']
+  comment text
+  created_at timestamp [default: `now()`]
+  sentiment varchar(20) [note: 'positive, negative, neutral']
+  emotion varchar(50)
+}
+
+// ============================================
+// Communication Group
+// ============================================
+
+TableGroup "Communication" {
+  messages
+  notifications
+}
+
+Table messages {
+  id int [pk]
+  sender_id int [not null, ref: > users.id]
+  receiver_id int [not null, ref: > users.id]
+  subject varchar(200)
+  body text [not null]
+  message_type varchar(30) [default: 'general', not null]
+  related_task_id int [ref: > tasks.id]
+  is_read boolean [default: false, not null]
+  read_at timestamp
+  created_at timestamp [default: `now()`]
+}
+
+Table notifications {
+  id int [pk]
+  user_id int [not null, ref: > users.id]
+  type varchar(50) [not null]
+  title varchar(200) [not null]
+  body text
+  metadata json
+  is_read boolean [default: false, not null]
+  created_at timestamp [default: `now()`]
+}
+
+// ============================================
+// System Group
+// ============================================
+
+TableGroup "System" {
+  audit_logs
+  migrations
+}
+
+Table audit_logs {
+  id int [pk]
+  user_id int [ref: > users.id]
+  action varchar(100) [not null]
+  entity_type varchar(50)
+  entity_id int
+  metadata json
+  created_at timestamp [default: `now()`]
+}
+
+Table migrations {
+  id int [pk]
+  name varchar(255) [not null]
+  run_on timestamp [default: `now()`, not null]
+}
+

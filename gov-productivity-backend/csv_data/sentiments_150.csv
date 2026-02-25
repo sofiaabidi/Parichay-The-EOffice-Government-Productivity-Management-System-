@@ -1,0 +1,121 @@
+text,interaction_type,sentiment,emotions
+My colleague helps solve complex tasks usually.,peer_to_peer,positive,"support,cooperation"
+My colleague helps solve complex tasks.,peer_to_peer,positive,"support,cooperation"
+My teammate communicates clearly usually.,peer_to_peer,positive,"respect,trust"
+My colleague helps solve complex tasks at times.,peer_to_peer,positive,"support,cooperation"
+My teammate is always supportive during deadlines generally.,peer_to_peer,positive,"cooperation,trust,encouragement"
+My teammate brings positive energy to meetings at times.,peer_to_peer,positive,"motivation,encouragement"
+My teammate communicates clearly generally.,peer_to_peer,positive,"respect,trust"
+My teammate brings positive energy to meetings at times.,peer_to_peer,positive,"motivation,encouragement"
+My teammate is always supportive during deadlines sometimes.,peer_to_peer,positive,"cooperation,trust,encouragement"
+My colleague helps solve complex tasks usually.,peer_to_peer,positive,"support,cooperation"
+My teammate is always supportive during deadlines generally.,peer_to_peer,positive,"cooperation,trust,encouragement"
+My teammate communicates clearly sometimes.,peer_to_peer,positive,"respect,trust"
+My teammate communicates clearly at times.,peer_to_peer,positive,"respect,trust"
+My teammate is always supportive during deadlines sometimes.,peer_to_peer,positive,"cooperation,trust,encouragement"
+My teammate brings positive energy to meetings at times.,peer_to_peer,positive,"motivation,encouragement"
+My colleague helps solve complex tasks at times.,peer_to_peer,positive,"support,cooperation"
+My teammate communicates clearly sometimes.,peer_to_peer,positive,"respect,trust"
+My teammate is always supportive during deadlines sometimes.,peer_to_peer,positive,"cooperation,trust,encouragement"
+My teammate brings positive energy to meetings at times.,peer_to_peer,positive,"motivation,encouragement"
+My colleague shares knowledge openly usually.,peer_to_peer,positive,"cooperation,respect"
+My teammate delays work frequently sometimes.,peer_to_peer,negative,frustration
+My teammate creates unnecessary conflict.,peer_to_peer,negative,"anger,stress"
+My teammate delays work frequently at times.,peer_to_peer,negative,frustration
+My colleague never cooperates with the team sometimes.,peer_to_peer,negative,"frustration,anger"
+My teammate creates unnecessary conflict.,peer_to_peer,negative,"anger,stress"
+My colleague never cooperates with the team generally.,peer_to_peer,negative,"frustration,anger"
+My colleague avoids responsibility usually.,peer_to_peer,negative,disappointment
+My colleague never cooperates with the team.,peer_to_peer,negative,"frustration,anger"
+My teammate delays work frequently sometimes.,peer_to_peer,negative,frustration
+My teammate creates unnecessary conflict usually.,peer_to_peer,negative,"anger,stress"
+My colleague avoids responsibility usually.,peer_to_peer,negative,disappointment
+My colleague talks rudely often sometimes.,peer_to_peer,negative,anger
+My colleague never cooperates with the team sometimes.,peer_to_peer,negative,"frustration,anger"
+My teammate delays work frequently sometimes.,peer_to_peer,negative,frustration
+My teammate creates unnecessary conflict sometimes.,peer_to_peer,negative,"anger,stress"
+My teammate creates unnecessary conflict.,peer_to_peer,negative,"anger,stress"
+My colleague talks rudely often usually.,peer_to_peer,negative,anger
+My teammate creates unnecessary conflict.,peer_to_peer,negative,"anger,stress"
+My colleague avoids responsibility generally.,peer_to_peer,negative,disappointment
+My colleague talks rudely often at times.,peer_to_peer,negative,anger
+My colleague is mostly professional.,peer_to_peer,neutral,
+My teammate's performance is okay generally.,peer_to_peer,neutral,
+My colleague is mostly professional generally.,peer_to_peer,neutral,
+My teammate works independently usually.,peer_to_peer,neutral,
+My colleague is mostly professional sometimes.,peer_to_peer,neutral,
+My colleague interacts occasionally usually.,peer_to_peer,neutral,
+My colleague interacts occasionally usually.,peer_to_peer,neutral,
+My teammate only does assigned tasks at times.,peer_to_peer,neutral,
+My teammate only does assigned tasks generally.,peer_to_peer,neutral,
+My teammate works independently at times.,peer_to_peer,neutral,
+My teammate only does assigned tasks at times.,peer_to_peer,neutral,
+My teammate's performance is okay generally.,peer_to_peer,neutral,
+My teammate only does assigned tasks sometimes.,peer_to_peer,neutral,
+My colleague is mostly professional sometimes.,peer_to_peer,neutral,
+My teammate's performance is okay generally.,peer_to_peer,neutral,
+My colleague interacts occasionally sometimes.,peer_to_peer,neutral,
+My teammate's performance is okay at times.,peer_to_peer,neutral,
+My colleague interacts occasionally generally.,peer_to_peer,neutral,
+My colleague interacts occasionally generally.,peer_to_peer,neutral,
+My colleague interacts occasionally generally.,peer_to_peer,neutral,
+My manager recognizes good work.,manager_to_peer,positive,"appreciation,motivation"
+My manager recognizes good work generally.,manager_to_peer,positive,"appreciation,motivation"
+My manager supports my growth usually.,manager_to_peer,positive,"encouragement,confidence"
+My manager supports my growth at times.,manager_to_peer,positive,"encouragement,confidence"
+My manager recognizes good work at times.,manager_to_peer,positive,"appreciation,motivation"
+My supervisor communicates clearly sometimes.,manager_to_peer,positive,"respect,trust"
+My manager supports my growth.,manager_to_peer,positive,"encouragement,confidence"
+My manager supports my growth sometimes.,manager_to_peer,positive,"encouragement,confidence"
+My manager recognizes good work.,manager_to_peer,positive,"appreciation,motivation"
+My manager supports my growth.,manager_to_peer,positive,"encouragement,confidence"
+My manager recognizes good work generally.,manager_to_peer,positive,"appreciation,motivation"
+My boss gives constructive feedback sometimes.,manager_to_peer,positive,"respect,confidence"
+My manager supports my growth generally.,manager_to_peer,positive,"encouragement,confidence"
+My manager helps solve problems usually.,manager_to_peer,positive,"support,confidence"
+My manager recognizes good work usually.,manager_to_peer,positive,"appreciation,motivation"
+My manager supports my growth sometimes.,manager_to_peer,positive,"encouragement,confidence"
+My boss gives constructive feedback usually.,manager_to_peer,positive,"respect,confidence"
+My manager recognizes good work.,manager_to_peer,positive,"appreciation,motivation"
+My manager helps solve problems generally.,manager_to_peer,positive,"support,confidence"
+My manager helps solve problems sometimes.,manager_to_peer,positive,"support,confidence"
+My manager micromanages everything usually.,manager_to_peer,negative,"stress,frustration"
+My boss never appreciates efforts.,manager_to_peer,negative,disappointment
+My manager ignores issues repeatedly sometimes.,manager_to_peer,negative,"frustration,anger"
+My boss never appreciates efforts at times.,manager_to_peer,negative,disappointment
+My manager gives unclear instructions.,manager_to_peer,negative,"stress,confusion"
+My manager gives unclear instructions generally.,manager_to_peer,negative,"stress,confusion"
+My supervisor is often rude at times.,manager_to_peer,negative,anger
+My manager micromanages everything at times.,manager_to_peer,negative,"stress,frustration"
+My manager micromanages everything sometimes.,manager_to_peer,negative,"stress,frustration"
+My manager ignores issues repeatedly.,manager_to_peer,negative,"frustration,anger"
+My supervisor is often rude generally.,manager_to_peer,negative,anger
+My supervisor is often rude sometimes.,manager_to_peer,negative,anger
+My manager gives unclear instructions.,manager_to_peer,negative,"stress,confusion"
+My manager gives unclear instructions.,manager_to_peer,negative,"stress,confusion"
+My manager micromanages everything sometimes.,manager_to_peer,negative,"stress,frustration"
+My manager micromanages everything.,manager_to_peer,negative,"stress,frustration"
+My manager gives unclear instructions at times.,manager_to_peer,negative,"stress,confusion"
+My boss never appreciates efforts.,manager_to_peer,negative,disappointment
+My supervisor is often rude sometimes.,manager_to_peer,negative,anger
+My supervisor is often rude generally.,manager_to_peer,negative,anger
+My supervisor gives average feedback at times.,manager_to_peer,neutral,
+My manager is neither supportive nor harsh usually.,manager_to_peer,neutral,
+My boss interacts normally generally.,manager_to_peer,neutral,
+My manager is mostly professional at times.,manager_to_peer,neutral,
+My manager is mostly professional.,manager_to_peer,neutral,
+My manager is neither supportive nor harsh sometimes.,manager_to_peer,neutral,
+My manager is mostly professional usually.,manager_to_peer,neutral,
+My manager is mostly professional generally.,manager_to_peer,neutral,
+My supervisor maintains basic communication generally.,manager_to_peer,neutral,
+My manager is neither supportive nor harsh sometimes.,manager_to_peer,neutral,
+My manager is mostly professional.,manager_to_peer,neutral,
+My boss interacts normally at times.,manager_to_peer,neutral,
+My boss interacts normally generally.,manager_to_peer,neutral,
+My boss interacts normally usually.,manager_to_peer,neutral,
+My manager is neither supportive nor harsh generally.,manager_to_peer,neutral,
+My supervisor maintains basic communication at times.,manager_to_peer,neutral,
+My boss interacts normally sometimes.,manager_to_peer,neutral,
+My manager is mostly professional usually.,manager_to_peer,neutral,
+My boss interacts normally sometimes.,manager_to_peer,neutral,
+My manager is mostly professional.,manager_to_peer,neutral,

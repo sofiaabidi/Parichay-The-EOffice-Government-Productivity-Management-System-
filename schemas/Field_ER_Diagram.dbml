@@ -1,0 +1,523 @@
+// Field ER Diagram
+// Generated from schema.sql
+// This diagram focuses on Field operations: field employees, surveys, field visits, field-specific KPIs
+
+// ============================================
+// Core Tables Group
+// ============================================
+
+TableGroup "Core Tables" {
+  users
+  teams
+  team_members
+}
+
+Table users {
+  id int [pk]
+  name varchar(150) [not null]
+  email varchar(150) [not null, unique]
+  password_hash varchar(255) [not null]
+  role varchar(20) [not null, note: 'FIELD_EMPLOYEE, FIELD_MANAGER, FIELD_ORG']
+  department varchar(100)
+  designation varchar(100)
+  is_active boolean [default: true]
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+  
+  Note: 'Core user table - Field employees, managers, org users'
+}
+
+Table teams {
+  id int [pk]
+  name varchar(150) [not null]
+  manager_id int [not null, ref: > users.id]
+  created_at timestamp [default: `now()`]
+  
+  Note: 'Teams managed by FIELD_MANAGER role'
+}
+
+Table team_members {
+  team_id int [pk, ref: > teams.id]
+  user_id int [pk, ref: > users.id]
+}
+
+// ============================================
+// Field Attendance Group
+// ============================================
+
+TableGroup "Field Attendance" {
+  field_employee_attendance
+}
+
+Table field_employee_attendance {
+  id int [pk]
+  user_id int [not null, ref: > users.id]
+  date date [not null]
+  checkin_time timestamp
+  checkout_time timestamp
+  total_time decimal(10,4)
+  present_absent varchar(20) [note: 'present, absent']
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+}
+
+// ============================================
+// Field KPI Group
+// ============================================
+
+TableGroup "Field KPI" {
+  field_employee_daily_kpi
+  field_employee_kpi_snapshots
+  weekly_kpi_snapshots_field
+}
+
+Table field_employee_daily_kpi {
+  id int [pk]
+  day date [not null]
+  user_id int [not null, ref: > users.id]
+  timeliness_quality_dpr decimal(5,2)
+  technical_compliance_projects decimal(5,2)
+  survey_accuracy decimal(5,2)
+  expenditure_vs_targets decimal(5,2)
+  task_timeliness decimal(5,2)
+  overall_kpi decimal(5,2)
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+}
+
+Table field_employee_kpi_snapshots {
+  id int [pk]
+  user_id int [not null, ref: > users.id]
+  period_start date [not null]
+  period_end date [not null]
+  dpr_kpi decimal(5,2)
+  technical_compliance_kpi decimal(5,2)
+  survey_kpi decimal(5,2)
+  expenditure_kpi decimal(5,2)
+  task_timeliness_kpi decimal(5,2)
+  final_kpi decimal(5,2)
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+}
+
+Table weekly_kpi_snapshots_field {
+  id int [pk]
+  timestamp date [not null, unique]
+  average_kpi_scores_of_field decimal(5,2) [not null]
+  total_field_employees int [default: 0]
+  total_field_managers int [default: 0]
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+  
+  Note: 'Weekly aggregated KPI scores for all field employees and managers. Aggregates data from field_employee_kpi_snapshots and manager_kpi_snapshots where period_start matches timestamp (week start Monday). Formula: (sum of all field employees final_kpi + sum of all field managers final_kpi) / (total number of field employees + total number of field managers). No FK constraints - calculated/aggregated table.'
+}
+
+// ============================================
+// Skills Group
+// ============================================
+
+TableGroup "Skills" {
+  field_employee_skills
+  field_employee_user_skills
+  task_skills
+  skill_score
+}
+
+Table field_employee_skills {
+  id int [pk]
+  skill_name varchar(200) [not null]
+  
+  Note: 'Catalog of available field skills'
+}
+
+Table field_employee_user_skills {
+  id int [pk]
+  user_id int [not null, ref: > users.id]
+  name varchar(200) [not null]
+  created_at timestamp [default: `now()`]
+}
+
+Table task_skills {
+  id int [pk]
+  task_id int [not null, ref: > tasks.id]
+  skill_id int [not null, ref: > field_employee_skills.id]
+  created_at timestamp [default: `now()`]
+}
+
+Table skill_score {
+  id int [pk]
+  task_id int [not null, ref: > tasks.id]
+  user_id int [not null, ref: > users.id]
+  skill_score decimal(5,4) [not null, note: '0-1 ratio']
+  matched_skills_count int [default: 0, not null]
+  total_skills_count int [default: 0, not null]
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+  
+  Note: 'Skill matching scores for tasks assigned to field employees'
+}
+
+// ============================================
+// Survey Management Group
+// ============================================
+
+TableGroup "Survey Management" {
+  surveys
+  survey_members
+  survey_submissions
+  survey_submission_files
+  survey_field_visits
+  supervisor_ratings
+}
+
+Table surveys {
+  id int [pk]
+  name varchar(200) [not null]
+  description text
+  created_by int [not null, ref: > users.id]
+  status varchar(20) [default: 'active', note: 'active, completed, archived']
+  start_date date
+  end_date date
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+  total_area varchar(100)
+  expected_time varchar(100)
+  location_id varchar(100)
+  deadline date
+}
+
+Table survey_members {
+  survey_id int [pk, ref: > surveys.id]
+  user_id int [pk, ref: > users.id]
+  assigned_at timestamp [default: `now()`]
+}
+
+Table survey_submissions {
+  id int [pk]
+  survey_id int [not null, ref: > surveys.id]
+  submitted_by int [not null, ref: > users.id]
+  submission_data json
+  status varchar(20) [default: 'draft', note: 'draft, submitted, reviewed']
+  submitted_at timestamp
+  reviewed_by int [ref: > users.id]
+  reviewed_at timestamp
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+  area_covered varchar(100)
+  time_taken varchar(100)
+  notes text
+  survey_accuracy decimal(5,2)
+  manager_remarks text
+  approval_status varchar(20) [default: 'pending', note: 'pending, approved, rejected']
+  survey_score decimal(5,2)
+}
+
+Table survey_submission_files {
+  id int [pk]
+  survey_submission_id int [not null, ref: > survey_submissions.id]
+  file_document_id int [not null, ref: > file_documents.id]
+  file_type varchar(20) [not null, note: 'image, pdf, document']
+  uploaded_at timestamp [default: `now()`]
+}
+
+Table survey_field_visits {
+  id int [pk]
+  survey_id int [not null, ref: > surveys.id]
+  visited_by int [not null, ref: > users.id]
+  visit_date date [default: `CURRENT_DATE`, not null]
+  notes text
+  created_at timestamp [default: `now()`]
+}
+
+Table supervisor_ratings {
+  id int [pk]
+  survey_field_visit_id int [not null, ref: > survey_field_visits.id]
+  employee_id int [not null, ref: > users.id]
+  rating decimal(3,1) [not null, note: '0-10']
+  notes text
+  created_at timestamp [default: `now()`]
+}
+
+// ============================================
+// Field Visits Group
+// ============================================
+
+TableGroup "Field Visits" {
+  field_visits
+  field_visit_files
+  project_field_visit_ratings
+}
+
+Table field_visits {
+  id int [pk]
+  visit_type varchar(20) [not null, note: 'project, survey']
+  project_id int [ref: > projects.id]
+  survey_id int [ref: > surveys.id]
+  visited_by int [not null, ref: > users.id]
+  visit_date date [not null]
+  location_id varchar(100)
+  latitude decimal(10,8)
+  longitude decimal(11,8)
+  notes text
+  status varchar(20) [default: 'scheduled', note: 'scheduled, in-progress, completed, cancelled']
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+  
+  Note: 'Either project_id or survey_id must be set based on visit_type'
+}
+
+Table field_visit_files {
+  id int [pk]
+  field_visit_id int [not null, ref: > field_visits.id]
+  file_document_id int [ref: > file_documents.id]
+  file_type varchar(20) [not null, note: 'image, pdf, document']
+  uploaded_by int [not null, ref: > users.id]
+  created_at timestamp [default: `now()`]
+}
+
+Table project_field_visit_ratings {
+  id int [pk]
+  field_visit_id int [not null, ref: > field_visits.id]
+  employee_id int [not null, ref: > users.id]
+  technical_compliance decimal(3,1) [not null, note: '0-10']
+  remarks text
+  created_at timestamp [default: `now()`]
+}
+
+// ============================================
+// Project Management Group
+// ============================================
+
+TableGroup "Project Management" {
+  projects
+  tasks
+  task_submissions
+  dpr_reviews
+}
+
+Table projects {
+  id int [pk]
+  name varchar(200) [not null]
+  description text
+  status varchar(20) [default: 'active', not null]
+  start_date date
+  due_date date
+  created_by int [ref: > users.id]
+  created_at timestamp [default: `now()`]
+  budget varchar(100)
+  dpr_deadline date
+  progress_percent decimal(5,2) [default: 0]
+  project_type varchar(20) [default: 'hq', note: 'hq or field']
+  
+  Note: 'Projects - filter by project_type=\'field\' for Field diagram'
+}
+
+Table tasks {
+  id int [pk]
+  title varchar(200) [not null]
+  description text
+  project_id int [ref: > projects.id]
+  assigned_to int [ref: > users.id]
+  assigned_by int [ref: > users.id]
+  priority varchar(10) [default: 'medium']
+  status varchar(20) [default: 'pending']
+  due_date date
+  completed_at timestamp
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+  draft_number int [default: 1]
+  milestone_id int
+  cost varchar(100)
+  expected_output text
+  planned_duration int
+  planned_completion_date date
+}
+
+Table task_submissions {
+  id int [pk]
+  task_id int [not null, ref: > tasks.id]
+  milestone_id int
+  submitted_by int [not null, ref: > users.id]
+  submission_type varchar(20) [not null]
+  file_document_id int [ref: > file_documents.id]
+  cost varchar(100)
+  status varchar(20) [default: 'submitted']
+  submitted_at timestamp [default: `now()`]
+  reviewed_by int [ref: > users.id]
+  reviewed_at timestamp
+  notes text
+}
+
+Table dpr_reviews {
+  id int [pk]
+  project_id int [not null, ref: > projects.id]
+  reviewed_by int [not null, ref: > users.id]
+  reviewed_for int [not null, ref: > users.id]
+  actual_submission_date date [not null]
+  deadline date [not null]
+  authenticity_stars int [default: 0, note: '0-5']
+  data_correctness_stars int [default: 0, note: '0-5']
+  technical_correctness_stars int [default: 0, note: '0-5']
+  completeness_stars int [default: 0, note: '0-5']
+  tools_and_resources_stars int [default: 0, note: '0-5']
+  remarks text
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+  
+  indexes {
+    (project_id, reviewed_for, reviewed_by) [unique]
+  }
+  
+  Note: 'DPR (Daily Progress Report) reviews for field projects - manager reviews of field employee DPR submissions'
+}
+
+// ============================================
+// Location Group
+// ============================================
+
+TableGroup "Location" {
+  locations
+}
+
+Table locations {
+  id int [pk]
+  location_id varchar(100) [not null]
+  user_id int [not null, ref: > users.id]
+  latitude decimal(10,8) [not null]
+  longitude decimal(11,8) [not null]
+  description text
+  created_at timestamp [default: `now()`]
+  interest varchar(20) [note: 'Project, Survey']
+}
+
+// ============================================
+// Team Analytics Group
+// ============================================
+
+TableGroup "Team Analytics" {
+  staff_adequency_field
+}
+
+Table staff_adequency_field {
+  team_id int [pk, ref: > teams.id]
+  team_util decimal(10,4)
+  otm decimal(15,4)
+  cto decimal(20,4)
+  current_team_size int [default: 0, not null]
+  last_updated timestamp [default: `now()`]
+  required_ppl int [note: 'Predicted from XGBoost model']
+  status varchar(20) [note: 'overstaffed, understaffed, balanced']
+  
+  Note: 'Staff adequacy metrics for field teams'
+}
+
+// ============================================
+// Training & Promotion Group
+// ============================================
+
+TableGroup "Training & Promotion" {
+  training_need_scores
+  promotion_score
+}
+
+Table training_need_scores {
+  id int [pk]
+  user_id int [not null, ref: > users.id]
+  kpi decimal(5,2) [not null]
+  absentee int [default: 0, not null]
+  avg_skill_score decimal(5,4)
+  training_need_score decimal(10,6) [not null]
+  calculated_at timestamp [default: `now()`]
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+  
+  Note: 'HIGHER score indicates higher training need (better candidate)'
+}
+
+Table promotion_score {
+  id int [pk]
+  user_id int [not null, ref: > users.id]
+  overall_kpi decimal(5,2)
+  absentees int [default: 0]
+  team_contribution decimal(10,4)
+  stars decimal(5,2)
+  promotion_score decimal(10,4)
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+  
+  Note: 'Promotion scoring data for field employees'
+}
+
+// ============================================
+// File Management Group
+// ============================================
+
+TableGroup "File Management" {
+  file_documents
+}
+
+Table file_documents {
+  id int [pk]
+  work_file_id int
+  uploaded_by int [ref: > users.id]
+  original_name varchar(255) [not null]
+  mime_type varchar(100) [not null]
+  file_size int [not null]
+  storage_path varchar(500) [not null]
+  created_at timestamp [default: `now()`]
+  approval_status varchar(20) [default: 'pending', not null]
+  reviewed_by int [ref: > users.id]
+  reviewed_at timestamp
+}
+
+// ============================================
+// Communication Group
+// ============================================
+
+TableGroup "Communication" {
+  messages
+  notifications
+}
+
+Table messages {
+  id int [pk]
+  sender_id int [not null, ref: > users.id]
+  receiver_id int [not null, ref: > users.id]
+  subject varchar(200)
+  body text [not null]
+  message_type varchar(30) [default: 'general', not null]
+  related_task_id int [ref: > tasks.id]
+  is_read boolean [default: false, not null]
+  read_at timestamp
+  created_at timestamp [default: `now()`]
+}
+
+Table notifications {
+  id int [pk]
+  user_id int [not null, ref: > users.id]
+  type varchar(50) [not null]
+  title varchar(200) [not null]
+  body text
+  metadata json
+  is_read boolean [default: false, not null]
+  created_at timestamp [default: `now()`]
+}
+
+// ============================================
+// System Group
+// ============================================
+
+TableGroup "System" {
+  audit_logs
+}
+
+Table audit_logs {
+  id int [pk]
+  user_id int [ref: > users.id]
+  action varchar(100) [not null]
+  entity_type varchar(50)
+  entity_id int
+  metadata json
+  created_at timestamp [default: `now()`]
+}
+

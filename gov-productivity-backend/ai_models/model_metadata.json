@@ -1,0 +1,7 @@
+{
+  "trained": true,
+  "training_samples": 150,
+  "mean_kpi": 69.61930768664398,
+  "std_kpi": 10.535154902241286,
+  "trained_at": "2025-12-09T03:24:48.165929"
+}

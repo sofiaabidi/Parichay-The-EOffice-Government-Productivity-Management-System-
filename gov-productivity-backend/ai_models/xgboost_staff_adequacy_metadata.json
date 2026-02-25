@@ -1,0 +1,13 @@
+{
+  "trained": true,
+  "training_samples": 80,
+  "test_samples": 20,
+  "test_score": 0.9616084831980042,
+  "feature_names": [
+    "team_util",
+    "otm",
+    "cto",
+    "current_team_size"
+  ],
+  "trained_at": "2025-12-09T04:30:36.835394"
+}
