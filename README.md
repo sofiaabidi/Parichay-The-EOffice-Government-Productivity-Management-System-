@@ -389,4 +389,4 @@ We are grateful for the contributions of the following team members:
 
 ## Documentation Credit
 
-All project documentation, structuring, and formatting has been led by **Ankita Sagar**. ❤️
+All project documentation, structuring, and formatting has been led by **Ankita Sagar**. 
